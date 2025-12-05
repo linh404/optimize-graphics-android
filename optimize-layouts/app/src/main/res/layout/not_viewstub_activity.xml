@@ -1,0 +1,11 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView android:text="RAM đã bị ăn mất dù chưa hiện View!" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    <Button android:id="@+id/btnShow" android:text="Hiện Layout (Chỉ đổi visibility)" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+    <!-- VẤN ĐỀ: Android vẫn phải inflate (tạo object) cho layout này ngay khi mở màn hình -->
+    <include android:id="@+id/heavyPanel" layout="@layout/panel_heavy" android:visibility="gone"/>
+</LinearLayout>

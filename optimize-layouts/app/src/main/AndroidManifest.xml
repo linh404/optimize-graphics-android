@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.optimize_layout_demo">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+
+        <!-- MENU CHÍNH -->
+        <activity android:name=".MainActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- CẶP 1: HIERARCHY -->
+        <!-- Sửa .LinearLayout thành .Linear (theo tên file của bạn) -->
+        <!-- LƯU Ý: Không nên đặt tên class là LinearLayout vì trùng với thư viện Android -->
+        <activity android:name=".Linear" android:label="1. Bad: Nested Linear" />
+        <activity android:name=".Constraint" android:label="1. Good: Constraint" />
+
+        <activity android:name=".re_li_benchmark_activity" android:label="4. Benchmark Tool" />
+
+        <!-- CẶP 2: REUSE -->
+        <activity android:name=".NotMerge" android:label="2. Bad: Include Normal" />
+        <activity android:name=".Merge" android:label="2. Good: Merge Tag" />
+
+        <!-- CẶP 3: LOADING -->
+        <activity android:name=".NotViewStub" android:label="3. Bad: Visibility Gone" />
+        <activity android:name=".ViewStub" android:label="3. Good: ViewStub" />
+
+    </application>
+</manifest>

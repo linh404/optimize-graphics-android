@@ -1,0 +1,15 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView android:text="RAM đang trống, View chưa được tạo!" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    <Button android:id="@+id/btnInflate" android:text="Inflate (Mới bắt đầu tốn RAM)" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+    <!-- GIẢI PHÁP: ViewStub nhẹ như lông hồng -->
+    <ViewStub
+        android:id="@+id/stubHeavy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/panel_heavy"/>
+</LinearLayout>
