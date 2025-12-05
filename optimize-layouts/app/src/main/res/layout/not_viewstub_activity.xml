@@ -10,14 +10,14 @@
 
         <TextView 
             android:id="@+id/infoText"
-            android:text="⚠️ 10 layout nặng đã được inflate ngay khi mở màn hình!\n→ Tất cả đã chiếm RAM dù visibility=&quot;gone&quot;\n→ Màn hình mở chậm vì phải inflate tất cả ngay" 
+            android:text="⚠️ 50 layout nặng đã được inflate ngay khi mở màn hình!\n→ Tất cả đã chiếm RAM dù visibility=&quot;gone&quot;\n→ Màn hình mở rất chậm vì phải inflate tất cả ngay" 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:textSize="14sp"
             android:textColor="#D32F2F"/>
         
-        <!-- 10 BUTTON, MỖI BUTTON HIỆN 1 LAYOUT RIÊNG -->
+        <!-- 50 BUTTON, MỖI BUTTON HIỆN 1 LAYOUT RIÊNG -->
         <Button 
             android:id="@+id/btnShow1" 
             android:text="Hiện Layout 1" 
@@ -97,6 +97,326 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"/>
         <include android:id="@+id/heavyPanel10" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow11" 
+            android:text="Hiện Layout 11" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel11" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow12" 
+            android:text="Hiện Layout 12" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel12" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow13" 
+            android:text="Hiện Layout 13" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel13" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow14" 
+            android:text="Hiện Layout 14" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel14" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow15" 
+            android:text="Hiện Layout 15" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel15" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow16" 
+            android:text="Hiện Layout 16" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel16" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow17" 
+            android:text="Hiện Layout 17" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel17" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow18" 
+            android:text="Hiện Layout 18" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel18" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow19" 
+            android:text="Hiện Layout 19" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel19" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow20" 
+            android:text="Hiện Layout 20" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel20" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow21" 
+            android:text="Hiện Layout 21" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel21" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow22" 
+            android:text="Hiện Layout 22" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel22" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow23" 
+            android:text="Hiện Layout 23" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel23" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow24" 
+            android:text="Hiện Layout 24" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel24" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow25" 
+            android:text="Hiện Layout 25" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel25" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow26" 
+            android:text="Hiện Layout 26" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel26" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow27" 
+            android:text="Hiện Layout 27" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel27" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow28" 
+            android:text="Hiện Layout 28" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel28" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow29" 
+            android:text="Hiện Layout 29" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel29" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow30" 
+            android:text="Hiện Layout 30" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel30" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow31" 
+            android:text="Hiện Layout 31" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel31" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow32" 
+            android:text="Hiện Layout 32" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel32" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow33" 
+            android:text="Hiện Layout 33" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel33" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow34" 
+            android:text="Hiện Layout 34" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel34" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow35" 
+            android:text="Hiện Layout 35" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel35" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow36" 
+            android:text="Hiện Layout 36" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel36" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow37" 
+            android:text="Hiện Layout 37" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel37" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow38" 
+            android:text="Hiện Layout 38" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel38" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow39" 
+            android:text="Hiện Layout 39" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel39" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow40" 
+            android:text="Hiện Layout 40" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel40" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow41" 
+            android:text="Hiện Layout 41" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel41" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow42" 
+            android:text="Hiện Layout 42" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel42" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow43" 
+            android:text="Hiện Layout 43" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel43" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow44" 
+            android:text="Hiện Layout 44" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel44" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow45" 
+            android:text="Hiện Layout 45" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel45" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow46" 
+            android:text="Hiện Layout 46" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel46" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow47" 
+            android:text="Hiện Layout 47" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel47" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow48" 
+            android:text="Hiện Layout 48" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel48" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow49" 
+            android:text="Hiện Layout 49" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel49" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow50" 
+            android:text="Hiện Layout 50" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel50" layout="@layout/panel_heavy" android:visibility="gone"/>
 
     </LinearLayout>
 </ScrollView>

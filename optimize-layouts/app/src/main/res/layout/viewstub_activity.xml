@@ -10,14 +10,14 @@
 
         <TextView 
             android:id="@+id/infoText"
-            android:text="✅ Màn hình mở ngay lập tức!\n→ 10 layout nặng chưa được inflate\n→ RAM chưa bị chiếm dụng\n→ Nhấn từng button để inflate layout riêng" 
+            android:text="✅ Màn hình mở ngay lập tức!\n→ 50 layout nặng chưa được inflate\n→ RAM chưa bị chiếm dụng\n→ Nhấn từng button để inflate layout riêng" 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:textSize="14sp"
             android:textColor="#388E3C"/>
         
-        <!-- 10 BUTTON, MỖI BUTTON INFLATE 1 VIEWSTUB RIÊNG -->
+        <!-- 50 BUTTON, MỖI BUTTON INFLATE 1 VIEWSTUB RIÊNG -->
         <Button 
             android:id="@+id/btnInflate1" 
             android:text="Hiện Layout 1" 
@@ -134,6 +134,486 @@
             android:layout_marginBottom="8dp"/>
         <ViewStub
             android:id="@+id/stubHeavy10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate11" 
+            android:text="Hiện Layout 11" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate12" 
+            android:text="Hiện Layout 12" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate13" 
+            android:text="Hiện Layout 13" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy13"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate14" 
+            android:text="Hiện Layout 14" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate15" 
+            android:text="Hiện Layout 15" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy15"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate16" 
+            android:text="Hiện Layout 16" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy16"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate17" 
+            android:text="Hiện Layout 17" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy17"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate18" 
+            android:text="Hiện Layout 18" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy18"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate19" 
+            android:text="Hiện Layout 19" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy19"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate20" 
+            android:text="Hiện Layout 20" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy20"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate21" 
+            android:text="Hiện Layout 21" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy21"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate22" 
+            android:text="Hiện Layout 22" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy22"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate23" 
+            android:text="Hiện Layout 23" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy23"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate24" 
+            android:text="Hiện Layout 24" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy24"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate25" 
+            android:text="Hiện Layout 25" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy25"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate26" 
+            android:text="Hiện Layout 26" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy26"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate27" 
+            android:text="Hiện Layout 27" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy27"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate28" 
+            android:text="Hiện Layout 28" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy28"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate29" 
+            android:text="Hiện Layout 29" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy29"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate30" 
+            android:text="Hiện Layout 30" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy30"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate31" 
+            android:text="Hiện Layout 31" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy31"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate32" 
+            android:text="Hiện Layout 32" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy32"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate33" 
+            android:text="Hiện Layout 33" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy33"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate34" 
+            android:text="Hiện Layout 34" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy34"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate35" 
+            android:text="Hiện Layout 35" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy35"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate36" 
+            android:text="Hiện Layout 36" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy36"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate37" 
+            android:text="Hiện Layout 37" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy37"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate38" 
+            android:text="Hiện Layout 38" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy38"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate39" 
+            android:text="Hiện Layout 39" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy39"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate40" 
+            android:text="Hiện Layout 40" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy40"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate41" 
+            android:text="Hiện Layout 41" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy41"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate42" 
+            android:text="Hiện Layout 42" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy42"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate43" 
+            android:text="Hiện Layout 43" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy43"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate44" 
+            android:text="Hiện Layout 44" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy44"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate45" 
+            android:text="Hiện Layout 45" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy45"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate46" 
+            android:text="Hiện Layout 46" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy46"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate47" 
+            android:text="Hiện Layout 47" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy47"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate48" 
+            android:text="Hiện Layout 48" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy48"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate49" 
+            android:text="Hiện Layout 49" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy49"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate50" 
+            android:text="Hiện Layout 50" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy50"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout="@layout/panel_heavy"/>
