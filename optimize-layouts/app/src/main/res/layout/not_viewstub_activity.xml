@@ -1,11 +1,102 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView android:text="RAM đã bị ăn mất dù chưa hiện View!" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <Button android:id="@+id/btnShow" android:text="Hiện Layout (Chỉ đổi visibility)" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <!-- VẤN ĐỀ: Android vẫn phải inflate (tạo object) cho layout này ngay khi mở màn hình -->
-    <include android:id="@+id/heavyPanel" layout="@layout/panel_heavy" android:visibility="gone"/>
-</LinearLayout>
+        <TextView 
+            android:id="@+id/infoText"
+            android:text="⚠️ 10 layout nặng đã được inflate ngay khi mở màn hình!\n→ Tất cả đã chiếm RAM dù visibility=&quot;gone&quot;\n→ Màn hình mở chậm vì phải inflate tất cả ngay" 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textSize="14sp"
+            android:textColor="#D32F2F"/>
+        
+        <!-- 10 BUTTON, MỖI BUTTON HIỆN 1 LAYOUT RIÊNG -->
+        <Button 
+            android:id="@+id/btnShow1" 
+            android:text="Hiện Layout 1" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel1" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow2" 
+            android:text="Hiện Layout 2" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel2" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow3" 
+            android:text="Hiện Layout 3" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel3" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow4" 
+            android:text="Hiện Layout 4" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel4" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow5" 
+            android:text="Hiện Layout 5" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel5" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow6" 
+            android:text="Hiện Layout 6" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel6" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow7" 
+            android:text="Hiện Layout 7" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel7" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow8" 
+            android:text="Hiện Layout 8" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel8" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow9" 
+            android:text="Hiện Layout 9" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel9" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+        <Button 
+            android:id="@+id/btnShow10" 
+            android:text="Hiện Layout 10" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <include android:id="@+id/heavyPanel10" layout="@layout/panel_heavy" android:visibility="gone"/>
+
+    </LinearLayout>
+</ScrollView>

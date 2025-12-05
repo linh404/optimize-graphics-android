@@ -1,15 +1,142 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView android:text="RAM đang trống, View chưa được tạo!" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <Button android:id="@+id/btnInflate" android:text="Inflate (Mới bắt đầu tốn RAM)" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
-    <!-- GIẢI PHÁP: ViewStub nhẹ như lông hồng -->
-    <ViewStub
-        android:id="@+id/stubHeavy"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout="@layout/panel_heavy"/>
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView 
+            android:id="@+id/infoText"
+            android:text="✅ Màn hình mở ngay lập tức!\n→ 10 layout nặng chưa được inflate\n→ RAM chưa bị chiếm dụng\n→ Nhấn từng button để inflate layout riêng" 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textSize="14sp"
+            android:textColor="#388E3C"/>
+        
+        <!-- 10 BUTTON, MỖI BUTTON INFLATE 1 VIEWSTUB RIÊNG -->
+        <Button 
+            android:id="@+id/btnInflate1" 
+            android:text="Hiện Layout 1" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate2" 
+            android:text="Hiện Layout 2" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate3" 
+            android:text="Hiện Layout 3" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate4" 
+            android:text="Hiện Layout 4" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate5" 
+            android:text="Hiện Layout 5" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate6" 
+            android:text="Hiện Layout 6" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate7" 
+            android:text="Hiện Layout 7" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate8" 
+            android:text="Hiện Layout 8" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate9" 
+            android:text="Hiện Layout 9" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+        <Button 
+            android:id="@+id/btnInflate10" 
+            android:text="Hiện Layout 10" 
+            android:layout_width="match_parent" 
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <ViewStub
+            android:id="@+id/stubHeavy10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout="@layout/panel_heavy"/>
+
+    </LinearLayout>
+</ScrollView>

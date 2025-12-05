@@ -1,7 +1,36 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <!-- Tạo ra cấu trúc: LinearLayout -> LinearLayout -> [Image, Text] -->
-    <include layout="@layout/not_merge" />
-</LinearLayout>
+    android:layout_height="match_parent">
+
+    <!-- Màn hình xấu: mỗi block đều có thêm container thừa do include thường -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp"
+        android:dividerHeight="8dp">
+
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+        <include layout="@layout/not_merge" />
+
+    </LinearLayout>
+</ScrollView>

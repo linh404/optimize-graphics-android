@@ -1,10 +1,66 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="10dp"
-    android:background="#E1BEE7">
-    <!-- Container này bị thừa khi nhúng vào LinearLayout khác -->
-    <ImageView android:src="@mipmap/ic_launcher" android:layout_width="50dp" android:layout_height="50dp"/>
-    <TextView android:text="User (Bad)" android:layout_gravity="center" android:layout_marginLeft="10dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="#FFEBEE"
+    android:elevation="2dp"
+    android:layout_marginBottom="8dp">
+
+    <!-- Container thừa cấp 1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:background="#FFC1E3">
+
+        <!-- Container thừa cấp 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:background="#F3E5F5">
+
+            <!-- Container thừa cấp 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:background="#EDE7F6">
+
+                <ImageView
+                    android:id="@+id/imgAvatar"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:src="@mipmap/ic_launcher" />
+
+                <!-- Container thừa cấp 4 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="12dp">
+
+                    <TextView
+                        android:id="@+id/txtTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="User (Bad)"
+                        android:textStyle="bold"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/txtDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nhiều container lồng nhau, overdraw"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

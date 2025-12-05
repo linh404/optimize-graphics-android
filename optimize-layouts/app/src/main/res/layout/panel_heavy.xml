@@ -1,37 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#FFF9C4"
-    android:padding="20dp">
+    android:background="#FFF9C4">
 
-    <!-- Tiêu đề -->
-    <TextView
-        android:text="ĐÂY LÀ LAYOUT RẤT NẶNG!"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#F57F17"
-        android:layout_gravity="center"
-        android:layout_marginBottom="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:text="Khi bạn thấy dòng này, nghĩa là ViewStub đã được Inflate và RAM đã bị chiếm dụng."
-        android:gravity="center"
-        android:layout_marginBottom="20dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <!-- Giả lập nhiều view con để làm nặng layout (Tốn RAM khởi tạo) -->
-    <Button android:text="Nút bấm 1" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    <Button android:text="Nút bấm 2" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    <TextView android:text="Dữ liệu mẫu dòng 1..." android:padding="5dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <TextView android:text="Dữ liệu mẫu dòng 2..." android:padding="5dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <TextView android:text="Dữ liệu mẫu dòng 3..." android:padding="5dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <TextView android:text="Dữ liệu mẫu dòng 4..." android:padding="5dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <TextView android:text="Dữ liệu mẫu dòng 5..." android:padding="5dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-    <ImageView android:src="@mipmap/ic_launcher" android:layout_gravity="center" android:layout_width="60dp" android:layout_height="60dp"/>
+        <!-- Tiêu đề -->
+        <TextView
+            android:text="ĐÂY LÀ LAYOUT RẤT NẶNG!"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#F57F17"
+            android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-</LinearLayout>
+        <TextView
+            android:text="Form đăng ký với 10+ input fields, hình ảnh, biểu đồ..."
+            android:gravity="center"
+            android:layout_marginBottom="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- FORM VỚI 10+ INPUT FIELDS -->
+        <TextView android:text="THÔNG TIN ĐĂNG KÝ" android:textStyle="bold" android:textSize="18sp" android:layout_marginBottom="10dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        
+        <EditText android:hint="Họ và tên" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:padding="12dp" android:background="#FFFFFF"/>
+        <EditText android:hint="Email" android:inputType="textEmailAddress" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:padding="12dp" android:background="#FFFFFF"/>
+        <EditText android:hint="Số điện thoại" android:inputType="phone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:padding="12dp" android:background="#FFFFFF"/>
+        <EditText android:hint="Địa chỉ" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:padding="12dp" android:background="#FFFFFF"/>
+        <EditText android:hint="Ngày sinh" android:inputType="date" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:padding="12dp" android:background="#FFFFFF"/>
+        <EditText android:hint="CMND/CCCD" android:inputType="number" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:padding="12dp" android:background="#FFFFFF"/>
+        <EditText android:hint="Nghề nghiệp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:padding="12dp" android:background="#FFFFFF"/>
+        <EditText android:hint="Công ty" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:padding="12dp" android:background="#FFFFFF"/>
+        <EditText android:hint="Mật khẩu" android:inputType="textPassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:padding="12dp" android:background="#FFFFFF"/>
+        <EditText android:hint="Xác nhận mật khẩu" android:inputType="textPassword" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp" android:padding="12dp" android:background="#FFFFFF"/>
+
+        <!-- HÌNH ẢNH -->
+        <TextView android:text="HÌNH ẢNH ĐÍNH KÈM" android:textStyle="bold" android:textSize="18sp" android:layout_marginTop="10dp" android:layout_marginBottom="10dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="10dp">
+            <ImageView android:src="@mipmap/ic_launcher" android:layout_width="80dp" android:layout_height="80dp" android:layout_marginEnd="10dp"/>
+            <ImageView android:src="@mipmap/ic_launcher" android:layout_width="80dp" android:layout_height="80dp" android:layout_marginEnd="10dp"/>
+            <ImageView android:src="@mipmap/ic_launcher" android:layout_width="80dp" android:layout_height="80dp"/>
+        </LinearLayout>
+
+        <!-- BIỂU ĐỒ GIẢ LẬP (Dùng nhiều View để vẽ) -->
+        <TextView android:text="BIỂU ĐỒ THỐNG KÊ" android:textStyle="bold" android:textSize="18sp" android:layout_marginTop="10dp" android:layout_marginBottom="10dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        
+        <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#FFFFFF" android:padding="15dp" android:layout_marginBottom="10dp">
+            <!-- Giả lập biểu đồ cột -->
+            <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="120dp" android:gravity="bottom">
+                <View android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1" android:background="#FF5722" android:layout_marginEnd="5dp"/>
+                <View android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1" android:background="#4CAF50" android:layout_marginEnd="5dp"/>
+                <View android:layout_width="0dp" android:layout_height="80dp" android:layout_weight="1" android:background="#2196F3" android:layout_marginEnd="5dp"/>
+                <View android:layout_width="0dp" android:layout_height="50dp" android:layout_weight="1" android:background="#FF9800" android:layout_marginEnd="5dp"/>
+                <View android:layout_width="0dp" android:layout_height="70dp" android:layout_weight="1" android:background="#9C27B0"/>
+            </LinearLayout>
+            <TextView android:text="Tháng 1  Tháng 2  Tháng 3  Tháng 4  Tháng 5" android:textSize="10sp" android:gravity="center" android:layout_marginTop="5dp" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <!-- THÔNG TIN BỔ SUNG -->
+        <TextView android:text="THÔNG TIN BỔ SUNG" android:textStyle="bold" android:textSize="18sp" android:layout_marginTop="10dp" android:layout_marginBottom="10dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        
+        <TextView android:text="• Mục 1: Thông tin chi tiết về sản phẩm và dịch vụ" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="5dp"/>
+        <TextView android:text="• Mục 2: Hướng dẫn sử dụng và chính sách bảo hành" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="5dp"/>
+        <TextView android:text="• Mục 3: Liên hệ hỗ trợ và phản hồi từ khách hàng" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="5dp"/>
+        <TextView android:text="• Mục 4: Câu hỏi thường gặp và giải đáp chi tiết" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="5dp"/>
+        <TextView android:text="• Mục 5: Điều khoản và điều kiện sử dụng" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="5dp"/>
+
+        <!-- NÚT BẤM -->
+        <Button android:text="Gửi đăng ký" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="15dp" android:backgroundTint="#4CAF50"/>
+        <Button android:text="Hủy bỏ" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
+</ScrollView>
