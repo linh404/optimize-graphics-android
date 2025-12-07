@@ -2,16 +2,14 @@ package com.example.optimize_layout_demo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.optimize_layout_demo.Constraint;
-import com.example.optimize_layout_demo.Linear;
-import com.example.optimize_layout_demo.Merge;
-import com.example.optimize_layout_demo.NotMerge;
-import com.example.optimize_layout_demo.NotViewStub;
-import com.example.optimize_layout_demo.ViewStub;
-
 public class MainActivity extends AppCompatActivity {
+
+    private FrameLayout renderContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,8 +22,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn1Good).setOnClickListener(v ->
                 startActivity(new Intent(this, Constraint.class)));
 
-        // --- THÊM MỚI: BENCHMARK TOOL ---
-        // Nút này sẽ mở màn hình đo đạc tốc độ
+        // --- BENCHMARK TOOL ---
         findViewById(R.id.btnBenchmark).setOnClickListener(v ->
                 startActivity(new Intent(this, re_li_benchmark_activity.class)));
 
@@ -42,5 +39,75 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btn3Good).setOnClickListener(v ->
                 startActivity(new Intent(this, ViewStub.class)));
+
+        // --- CẶP 4: OPENGL ES RENDERING ---
+        findViewById(R.id.btn4Bad).setOnClickListener(v -> showCanvas2DRendering());
+        findViewById(R.id.btn4Good).setOnClickListener(v -> showOpenGLRendering());
+    }
+
+    private void showCanvas2DRendering() {
+        // ẨN ActionBar trước khi chuyển view
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
+        // Xóa view cũ nếu có
+        if (renderContainer != null) {
+            ((ViewGroup) findViewById(android.R.id.content)).removeView(renderContainer);
+        }
+
+        // Tạo container
+        renderContainer = new FrameLayout(this);
+        renderContainer.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        // Thêm Canvas 2D View
+        NormalRenderingView canvas2DView = new NormalRenderingView(this);
+        renderContainer.addView(canvas2DView);
+
+        // Thêm vào màn hình
+        ((ViewGroup) findViewById(android.R.id.content)).addView(renderContainer);
+    }
+
+    private void showOpenGLRendering() {
+        // ẨN ActionBar trước khi chuyển view
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
+        // Xóa view cũ nếu có
+        if (renderContainer != null) {
+            ((ViewGroup) findViewById(android.R.id.content)).removeView(renderContainer);
+        }
+
+        // Tạo container
+        renderContainer = new FrameLayout(this);
+        renderContainer.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+
+        // Thêm OpenGL View
+        OpenGLRenderingView openGLView = new OpenGLRenderingView(this);
+        renderContainer.addView(openGLView);
+
+        // Thêm vào màn hình
+        ((ViewGroup) findViewById(android.R.id.content)).addView(renderContainer);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Nếu đang show rendering, back về menu chính
+        if (renderContainer != null) {
+            // HIỆN lại ActionBar khi back về menu
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().show();
+            }
+
+            ((ViewGroup) findViewById(android.R.id.content)).removeView(renderContainer);
+            renderContainer = null;
+        } else {
+            super.onBackPressed();
+        }
     }
 }

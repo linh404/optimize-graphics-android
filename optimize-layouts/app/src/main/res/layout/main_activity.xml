@@ -5,11 +5,26 @@
     android:padding="20dp"
     android:gravity="center_horizontal">
 
-    <TextView android:text="CHỌN DEMO ĐỂ SOI INSPECTOR" android:textStyle="bold" android:layout_marginBottom="20dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+    <TextView
+        android:text="CHỌN DEMO ĐỂ SOI INSPECTOR"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-    <!-- CẶP 1 -->
-    <Button android:id="@+id/btn1Bad" android:text="1. Linear Nested (Bad)" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    <Button android:id="@+id/btn1Good" android:text="1. Constraint (Good)" android:backgroundTint="#4CAF50" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    <!-- CẶP 1: Layout Nested -->
+    <Button
+        android:id="@+id/btn1Bad"
+        android:text="1. Linear Nested (Bad)"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn1Good"
+        android:text="1. Constraint (Good)"
+        android:backgroundTint="#4CAF50"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/btnBenchmark"
@@ -19,18 +34,61 @@
         android:textStyle="bold"
         android:backgroundTint="#FF9800"
         android:textColor="#FFFFFF"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
 
-    <View android:layout_height="20dp" android:layout_width="match_parent"/>
+    <View
+        android:layout_height="20dp"
+        android:layout_width="match_parent"/>
 
-    <!-- CẶP 2 -->
-    <Button android:id="@+id/btn2Bad" android:text="2. Include Normal (Bad)" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    <Button android:id="@+id/btn2Good" android:text="2. Include Merge (Good)" android:backgroundTint="#4CAF50" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    <!-- CẶP 2: Include -->
+    <Button
+        android:id="@+id/btn2Bad"
+        android:text="2. Include Normal (Bad)"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-    <View android:layout_height="20dp" android:layout_width="match_parent"/>
+    <Button
+        android:id="@+id/btn2Good"
+        android:text="2. Include Merge (Good)"
+        android:backgroundTint="#4CAF50"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
-    <!-- CẶP 3 -->
-    <Button android:id="@+id/btn3Bad" android:text="3. Visibility Gone (Bad)" android:layout_width="match_parent" android:layout_height="wrap_content"/>
-    <Button android:id="@+id/btn3Good" android:text="3. ViewStub (Good)" android:backgroundTint="#4CAF50" android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    <View
+        android:layout_height="20dp"
+        android:layout_width="match_parent"/>
+
+    <!-- CẶP 3: ViewStub -->
+    <Button
+        android:id="@+id/btn3Bad"
+        android:text="3. Visibility Gone (Bad)"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn3Good"
+        android:text="3. ViewStub (Good)"
+        android:backgroundTint="#4CAF50"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <View
+        android:layout_height="20dp"
+        android:layout_width="match_parent"/>
+
+    <!-- CẶP 4: OpenGL ES Rendering -->
+    <Button
+        android:id="@+id/btn4Bad"
+        android:text="4. Canvas 2D Rendering (Bad)"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btn4Good"
+        android:text="4. OpenGL ES Rendering (Good)"
+        android:backgroundTint="#4CAF50"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
