@@ -3,10 +3,9 @@ package com.example.optimize_layout_demo;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.LinearGradient;
 import android.graphics.Paint;
-import android.graphics.Shader;
 import android.os.Trace;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -17,129 +16,107 @@ import java.util.Random;
 
 public class NormalRenderingView extends View {
 
-    private Paint paint;
-    private List<Rect> rectangles;
+    private static final int RECT_COUNT = 20_000;
+    private static final float RECT_PX = 40f; // 40 px mỗi chiều
+    private static final int RECT_COLOR = Color.argb(204, 51, 179, 255); // RGBA ~ (0.2, 0.7, 1.0, 0.8)
+
+    private final Paint paint;
+    private final List<Rect> rectangles;
+    private final Random random;
     private boolean hasMeasured = false;
-    private Random random;
 
     public static class Rect {
-        public float left;
-        public float top;
-        public float right;
-        public float bottom;
-        public int color;
-        public float rotation;
+        public final float left;
+        public final float top;
+        public final float right;
+        public final float bottom;
 
-        public Rect(float left, float top, float right, float bottom, int color, float rotation) {
+        public Rect(float left, float top, float right, float bottom) {
             this.left = left;
             this.top = top;
             this.right = right;
             this.bottom = bottom;
-            this.color = color;
-            this.rotation = rotation;
         }
     }
 
     public NormalRenderingView(Context context) {
-        super(context);
+        this(context, null);
+    }
 
+    public NormalRenderingView(Context context, AttributeSet attrs) {
+        super(context, attrs);
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        rectangles = new ArrayList<>();
+        rectangles = new ArrayList<>(RECT_COUNT);
         random = new Random();
+    }
 
-        // Vẽ 20,000 hình ngẫu nhiên (cho test hiệu năng)
-        for (int i = 0; i < 20000; i++) {
-            float left = random.nextFloat() * 2000;
-            float top = random.nextFloat() * 3000;
-            float width = 10f + random.nextFloat() * 50;
-            float height = 10f + random.nextFloat() * 50;
+    private void ensureRects() {
+        if (!rectangles.isEmpty()) return;
+        int w = getWidth();
+        int h = getHeight();
+        if (w <= 0 || h <= 0) return;
 
-            int color = Color.argb(
-                    150 + random.nextInt(106),
-                    random.nextInt(256),
-                    random.nextInt(256),
-                    random.nextInt(256)
-            );
+        float maxX = Math.max(0f, w - RECT_PX);
+        float maxY = Math.max(0f, h - RECT_PX);
 
-            rectangles.add(new Rect(
-                    left,
-                    top,
-                    left + width,
-                    top + height,
-                    color,
-                    random.nextFloat() * 360f
-            ));
+        for (int i = 0; i < RECT_COUNT; i++) {
+            float x = random.nextFloat() * maxX;
+            float y = random.nextFloat() * maxY;
+            rectangles.add(new Rect(x, y, x + RECT_PX, y + RECT_PX));
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (hasMeasured) return;
 
-        // Đo hiệu năng bằng Trace
+        ensureRects();
+        if (rectangles.isEmpty()) {
+            // Chưa có kích thước view, đợi lần sau
+            invalidate();
+            return;
+        }
+
         Trace.beginSection("Canvas_Render_20000_Shapes");
+        long start = System.nanoTime();
 
-        long startRender = !hasMeasured ? System.nanoTime() : 0L;
-
-        // Background gradient
-        Trace.beginSection("Canvas_Background");
-        LinearGradient gradient = new LinearGradient(
-                0f, 0f, getWidth(), getHeight(),
-                Color.BLACK, Color.DKGRAY,
-                Shader.TileMode.CLAMP
-        );
-        paint.setShader(gradient);
+        // Nền đen
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(0f, 0f, getWidth(), getHeight(), paint);
-        paint.setShader(null);
-        Trace.endSection();
 
-        // Vẽ hình
-        Trace.beginSection("Canvas_Draw_Rectangles");
-        for (Rect rect : rectangles) {
-            canvas.save();
-            canvas.rotate(
-                    rect.rotation,
-                    (rect.left + rect.right) / 2,
-                    (rect.top + rect.bottom) / 2
-            );
-            paint.setColor(rect.color);
-            paint.setStyle(Paint.Style.FILL);
-            paint.setShadowLayer(5f, 2f, 2f, Color.BLACK);
-            canvas.drawRect(rect.left, rect.top, rect.right, rect.bottom, paint);
-            canvas.restore();
-        }
-        Trace.endSection();
-
-        if (!hasMeasured) {
-            double renderTime = (System.nanoTime() - startRender) / 1_000_000.0; // ms
-
-            // Hiển thị kết quả
-            Trace.beginSection("Canvas_Draw_Text");
-            paint.clearShadowLayer();
-            paint.setColor(Color.WHITE);
-            paint.setTextSize(60f);
-            paint.setStyle(Paint.Style.FILL);
-            canvas.drawText("Canvas (CPU)", 50f, 120f, paint);
-            canvas.drawText(String.format("%.2f ms", renderTime), 50f, 200f, paint);
-            paint.setTextSize(40f);
-            canvas.drawText("20,000 shapes + effects", 50f, 280f, paint);
-            Trace.endSection();
-
-            getContext().getSharedPreferences("results", Context.MODE_PRIVATE)
-                    .edit()
-                    .putFloat("canvas_render_time", (float) renderTime)
-                    .apply();
-            Log.d("CanvasTest", "Canvas render time: " + renderTime + " ms");
-
-            Toast.makeText(
-                    getContext(),
-                    "Canvas: " + String.format("%.2f ms", renderTime),
-                    Toast.LENGTH_LONG
-            ).show();
-
-            hasMeasured = true;
+        // Vẽ 20.000 rect (cùng màu, không shadow/rotate)
+        paint.setColor(RECT_COLOR);
+        paint.setStyle(Paint.Style.FILL);
+        for (Rect r : rectangles) {
+            canvas.drawRect(r.left, r.top, r.right, r.bottom, paint);
         }
 
+        long end = System.nanoTime();
+        double renderTimeMs = (end - start) / 1_000_000.0;
+
+        // Overlay kết quả
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(60f);
+        canvas.drawText("Canvas (CPU)", 50f, 120f, paint);
+        canvas.drawText(String.format("First frame: %.2f ms", renderTimeMs), 50f, 200f, paint);
+        paint.setTextSize(40f);
+        canvas.drawText("20,000 rects, same size/color", 50f, 280f, paint);
+
+        // Lưu + log + Toast
+        getContext().getSharedPreferences("results", Context.MODE_PRIVATE)
+                .edit()
+                .putFloat("canvas_render_time", (float) renderTimeMs)
+                .apply();
+        Log.d("CanvasTest", "Canvas first-frame render: " + renderTimeMs + " ms");
+        Toast.makeText(
+                getContext(),
+                "Canvas first frame: " + String.format("%.2f ms", renderTimeMs),
+                Toast.LENGTH_LONG
+        ).show();
+
+        hasMeasured = true;
         Trace.endSection();
     }
 }
