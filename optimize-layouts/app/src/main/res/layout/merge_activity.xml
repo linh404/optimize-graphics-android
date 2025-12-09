@@ -11,26 +11,6 @@
         android:dividerHeight="8dp">
 
         <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
-        <include layout="@layout/merge" />
 
     </LinearLayout>
 </ScrollView>

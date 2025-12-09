@@ -1,42 +1,15 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Bỏ hết container thừa, chỉ giữ nội dung chính -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_back"/>
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:background="#E8F5E9"
-        android:elevation="2dp"
-        android:layout_marginBottom="8dp">
+        android:text="Title"
+        android:textSize="20sp"
+        android:layout_marginStart="12dp"/>
 
-        <ImageView
-            android:id="@+id/imgAvatar"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:src="@mipmap/ic_launcher" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="12dp">
-
-            <TextView
-                android:id="@+id/txtTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="User (Merge)"
-                android:textStyle="bold"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/txtDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ít view hơn, giảm overdraw"
-                android:textSize="14sp" />
-        </LinearLayout>
-    </LinearLayout>
 </merge>
