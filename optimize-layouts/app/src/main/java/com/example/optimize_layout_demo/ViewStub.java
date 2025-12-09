@@ -9,9 +9,28 @@ public class ViewStub extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Mở ngay lập tức, không delay vì layout nhẹ
+
+        // --- BẮT ĐẦU ĐO ---
+        // 1. Lấy thời gian trước khi nạp layout
+        long startTime = System.currentTimeMillis();
+
+        // 2. Thực hiện lệnh nặng nhất (Inflate 50 layout ẩn)
         setContentView(R.layout.viewstub_activity);
-        setTitle("3. Good: ViewStub");
+
+        // 3. Lấy thời gian sau khi nạp xong
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - startTime; // Thời gian chênh lệch (ms)
+        // --- KẾT THÚC ĐO ---
+
+        // 4. Hiển thị kết quả lên màn hình (để bạn chụp ảnh báo cáo)
+        setTitle("Bad Case: Mất " + duration + "ms để mở");
+
+        // Cập nhật text cảnh báo trong layout (ID infoText có trong XML bạn gửi lúc nãy)
+        android.widget.TextView infoText = findViewById(R.id.infoText);
+        if (infoText != null) {
+            infoText.setText("⏱️ THỜI GIAN LOAD: " + duration + "ms\n" +
+                    "⚠️ Màn hình bị đơ " + duration + "ms khi vừa mở.\n");
+        }
 
         // 50 ViewStub này siêu nhẹ, chưa chiếm bộ nhớ layout con
         android.view.ViewStub[] stubs = new android.view.ViewStub[50];
