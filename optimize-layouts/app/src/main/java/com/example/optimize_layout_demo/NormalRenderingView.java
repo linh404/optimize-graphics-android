@@ -15,14 +15,15 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Vẽ 20.000 hình chữ nhật (40px x 40px), cùng màu, vị trí ngẫu nhiên trong màn hình.
+ * Vẽ 20.000 hình chữ nhật (40px x 40px), mỗi rect có màu khác nhau, vị trí ngẫu nhiên.
  * Đo thời gian render 1 frame (onDraw đầu tiên), có nhãn Trace cho System Trace.
  */
 public class NormalRenderingView extends View {
 
     private static final int RECT_COUNT = 20_000;
     private static final float RECT_PX = 40f;
-    private static final int RECT_COLOR = Color.argb(204, 51, 179, 255); // RGBA ~ (0.2, 0.7, 1.0, 0.8)
+    // nếu muốn alpha khác có thể sửa ở đây (0..255)
+    private static final int RECT_ALPHA = 204;
 
     private final Paint paint;
     private final List<Rect> rects;
@@ -32,7 +33,8 @@ public class NormalRenderingView extends View {
 
     public static class Rect {
         public final float left, top, right, bottom;
-        public Rect(float l, float t, float r, float b) { left = l; top = t; right = r; bottom = b; }
+        public final int color;
+        public Rect(float l, float t, float r, float b, int color) { left = l; top = t; right = r; bottom = b; this.color = color; }
     }
 
     public NormalRenderingView(Context context) { this(context, null); }
@@ -56,7 +58,14 @@ public class NormalRenderingView extends View {
         for (int i = 0; i < RECT_COUNT; i++) {
             float x = random.nextFloat() * maxX;
             float y = random.nextFloat() * maxY;
-            rects.add(new Rect(x, y, x + RECT_PX, y + RECT_PX));
+
+            // Tạo màu bằng HSV để màu phân bố đẹp; alpha cố định
+            float hue = random.nextFloat() * 360f;
+            float sat = 0.6f + random.nextFloat() * 0.4f; // 0.6..1.0
+            float val = 0.6f + random.nextFloat() * 0.4f; // 0.6..1.0
+            int color = Color.HSVToColor(RECT_ALPHA, new float[]{hue, sat, val});
+
+            rects.add(new Rect(x, y, x + RECT_PX, y + RECT_PX, color));
         }
     }
 
@@ -76,10 +85,10 @@ public class NormalRenderingView extends View {
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(0f, 0f, getWidth(), getHeight(), paint);
 
-        // Vẽ 20.000 rect
-        paint.setColor(RECT_COLOR);
+        // Vẽ 20.000 rect với màu riêng từng rect
         paint.setStyle(Paint.Style.FILL);
         for (Rect r : rects) {
+            paint.setColor(r.color);
             canvas.drawRect(r.left, r.top, r.right, r.bottom, paint);
         }
 

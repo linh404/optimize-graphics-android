@@ -20,10 +20,10 @@ import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Vẽ 20.000 hình chữ nhật (40px x 40px) bằng OpenGL ES 2.0:
- * - Gom toàn bộ vào một VBO
+ * - Dùng VBO interleaved (position + color)
  * - Một draw call (TRIANGLES)
  * - glFinish() để chờ GPU vẽ xong trước khi đo thời gian
- * - Đo 1 frame đầu tiên, có nhãn Trace cho System Trace
+ * - Mỗi rect có màu riêng (dùng màu ngẫu nhiên có seed cố định)
  */
 public class OpenGLRenderingView extends GLSurfaceView {
 
@@ -45,7 +45,6 @@ public class OpenGLRenderingView extends GLSurfaceView {
 
         private static final int RECT_COUNT = 20_000;
         private static final float RECT_PX = 40f;
-        private static final float[] COLOR = {0.2f, 0.7f, 1.0f, 0.8f};
 
         private final Context context;
         private final Handler mainHandler;
@@ -54,11 +53,26 @@ public class OpenGLRenderingView extends GLSurfaceView {
         private int program = 0;
         private int vboId = 0;
         private int aPosLoc;
-        private int uColorLoc;
+        private int aColorLoc;
         private int surfaceW = 0, surfaceH = 0;
 
         private boolean hasMeasured = false;
         private double lastRenderMs = 0.0;
+
+        // vertex shader nhận position + color attribute
+        private final String vs =
+                "attribute vec4 vPosition;\n" +
+                        "attribute vec4 aColor;\n" +
+                        "varying vec4 vColor;\n" +
+                        "void main(){\n" +
+                        "  gl_Position = vPosition;\n" +
+                        "  vColor = aColor;\n" +
+                        "}\n";
+
+        private final String fs =
+                "precision mediump float;\n" +
+                        "varying vec4 vColor;\n" +
+                        "void main(){ gl_FragColor = vColor; }\n";
 
         public RectanglesRenderer(Context context) {
             this.context = context;
@@ -69,12 +83,6 @@ public class OpenGLRenderingView extends GLSurfaceView {
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
             GLES20.glClearColor(0f, 0f, 0f, 1f);
 
-            String vs = "attribute vec4 vPosition;\n" +
-                    "void main(){ gl_Position = vPosition; }\n";
-            String fs = "precision mediump float;\n" +
-                    "uniform vec4 uColor;\n" +
-                    "void main(){ gl_FragColor = uColor; }\n";
-
             int vShader = loadShader(GLES20.GL_VERTEX_SHADER, vs);
             int fShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fs);
             program = GLES20.glCreateProgram();
@@ -83,7 +91,7 @@ public class OpenGLRenderingView extends GLSurfaceView {
             GLES20.glLinkProgram(program);
 
             aPosLoc = GLES20.glGetAttribLocation(program, "vPosition");
-            uColorLoc = GLES20.glGetUniformLocation(program, "uColor");
+            aColorLoc = GLES20.glGetAttribLocation(program, "aColor");
         }
 
         @Override
@@ -103,20 +111,48 @@ public class OpenGLRenderingView extends GLSurfaceView {
             float maxY = 2f - sizeNdcY;
 
             // Mỗi rect 2 tam giác = 6 đỉnh
-            float[] vertices = new float[RECT_COUNT * 6 * 3];
+            // Interleaved: 3 pos + 4 color = 7 floats per vertex
+            final int floatsPerVertex = 7;
+            int vertexCount = RECT_COUNT * 6;
+            float[] interleaved = new float[vertexCount * floatsPerVertex];
             int idx = 0;
             for (int i = 0; i < RECT_COUNT; i++) {
                 float x = -1f + random.nextFloat() * maxX;
                 float y = -1f + random.nextFloat() * maxY;
 
+                // generate a color per-rect (HSV distribution) with alpha ~0.8
+                float hue = random.nextFloat() * 360f;
+                float sat = 0.6f + random.nextFloat() * 0.4f;
+                float val = 0.6f + random.nextFloat() * 0.4f;
+                // Convert HSV to RGB floats 0..1
+                int colInt = android.graphics.Color.HSVToColor( (int)(0.8f*255), new float[]{hue, sat, val} );
+                float a = ((colInt >> 24) & 0xFF) / 255f;
+                float r = ((colInt >> 16) & 0xFF) / 255f;
+                float g = ((colInt >> 8) & 0xFF) / 255f;
+                float b = (colInt & 0xFF) / 255f;
+
+                float x2 = x + sizeNdcX;
+                float y2 = y + sizeNdcY;
+
                 // Tri 1
-                vertices[idx++] = x;             vertices[idx++] = y;              vertices[idx++] = 0f;
-                vertices[idx++] = x + sizeNdcX;  vertices[idx++] = y;              vertices[idx++] = 0f;
-                vertices[idx++] = x;             vertices[idx++] = y + sizeNdcY;   vertices[idx++] = 0f;
+                interleaved[idx++] = x;    interleaved[idx++] = y;    interleaved[idx++] = 0f;
+                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
+
+                interleaved[idx++] = x2;   interleaved[idx++] = y;    interleaved[idx++] = 0f;
+                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
+
+                interleaved[idx++] = x;    interleaved[idx++] = y2;   interleaved[idx++] = 0f;
+                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
+
                 // Tri 2
-                vertices[idx++] = x + sizeNdcX;  vertices[idx++] = y;              vertices[idx++] = 0f;
-                vertices[idx++] = x + sizeNdcX;  vertices[idx++] = y + sizeNdcY;   vertices[idx++] = 0f;
-                vertices[idx++] = x;             vertices[idx++] = y + sizeNdcY;   vertices[idx++] = 0f;
+                interleaved[idx++] = x2;   interleaved[idx++] = y;    interleaved[idx++] = 0f;
+                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
+
+                interleaved[idx++] = x2;   interleaved[idx++] = y2;   interleaved[idx++] = 0f;
+                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
+
+                interleaved[idx++] = x;    interleaved[idx++] = y2;   interleaved[idx++] = 0f;
+                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
             }
 
             if (vboId != 0) {
@@ -130,14 +166,14 @@ public class OpenGLRenderingView extends GLSurfaceView {
             vboId = buffers[0];
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId);
 
-            FloatBuffer vb = ByteBuffer.allocateDirect(vertices.length * 4)
+            FloatBuffer vb = ByteBuffer.allocateDirect(interleaved.length * 4)
                     .order(ByteOrder.nativeOrder()).asFloatBuffer();
-            vb.put(vertices).position(0);
+            vb.put(interleaved).position(0);
 
-            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertices.length * 4, vb, GLES20.GL_STATIC_DRAW);
+            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, interleaved.length * 4, vb, GLES20.GL_STATIC_DRAW);
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
 
-            Log.d("OpenGLRenderer", "VBO built for 20k rects, verts=" + (RECT_COUNT * 6));
+            Log.d("OpenGLRenderer", "VBO built for 20k rects, verts=" + vertexCount + ", floats=" + interleaved.length);
         }
 
         @Override
@@ -151,9 +187,17 @@ public class OpenGLRenderingView extends GLSurfaceView {
             GLES20.glUseProgram(program);
 
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId);
+
+            final int floatsPerVertex = 7;
+            final int stride = floatsPerVertex * 4; // bytes
+
+            // position attribute: 3 floats, offset 0
             GLES20.glEnableVertexAttribArray(aPosLoc);
-            GLES20.glVertexAttribPointer(aPosLoc, 3, GLES20.GL_FLOAT, false, 3 * 4, 0);
-            GLES20.glUniform4fv(uColorLoc, 1, COLOR, 0);
+            GLES20.glVertexAttribPointer(aPosLoc, 3, GLES20.GL_FLOAT, false, stride, 0);
+
+            // color attribute: 4 floats, offset 3 * 4 bytes
+            GLES20.glEnableVertexAttribArray(aColorLoc);
+            GLES20.glVertexAttribPointer(aColorLoc, 4, GLES20.GL_FLOAT, false, stride, 3 * 4);
 
             int vertexCount = RECT_COUNT * 6;
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
@@ -162,6 +206,7 @@ public class OpenGLRenderingView extends GLSurfaceView {
             GLES20.glFinish();
 
             GLES20.glDisableVertexAttribArray(aPosLoc);
+            GLES20.glDisableVertexAttribArray(aColorLoc);
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
 
             long end = System.nanoTime();
