@@ -91,7 +91,7 @@ public class NormalRenderingView extends View {
     private void initTextOverlay(String text) {
         if (textOverlayInitialized) return;
 
-        // nhỏ hơn, đặt ở góc trái trên
+        // nhỏ, góc trái trên
         textBitmap = Bitmap.createBitmap(600, 160, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(textBitmap);
         Paint tp = new Paint(Paint.ANTI_ALIAS_FLAG);

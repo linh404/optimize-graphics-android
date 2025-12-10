@@ -351,7 +351,7 @@ public class OpenGLRenderingView extends GLSurfaceView {
         }
 
         private void initOverlayTexture(String text) {
-            // Giống y hệt Canvas: 600x160, text size 42f, padding 16px
+            // Giống Canvas: 600x160, text size 42f, padding 16px
             Bitmap bmp = Bitmap.createBitmap((int)OVERLAY_WIDTH, (int)OVERLAY_HEIGHT, Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(bmp);
             c.drawColor(Color.TRANSPARENT);
@@ -361,7 +361,6 @@ public class OpenGLRenderingView extends GLSurfaceView {
             p.setTextSize(42f);
             p.setTypeface(android.graphics.Typeface.DEFAULT);
 
-            // Text positions (relative to bitmap, giống Canvas)
             c.drawText("OpenGL ES (50k rect)", 16f, 60f, p);
             c.drawText(text, 16f, 120f, p);
 
