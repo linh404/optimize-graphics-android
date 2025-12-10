@@ -43,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
         // --- CẶP 4: OPENGL ES RENDERING ---
         findViewById(R.id.btn4Bad).setOnClickListener(v -> showCanvas2DRendering());
         findViewById(R.id.btn4Good).setOnClickListener(v -> showOpenGLRendering());
+
+        // --- CẶP 5: IMAGE LAZY LOADING ---
+        findViewById(R.id.btn5Bad).setOnClickListener(v ->
+                startActivity(new Intent(this, ImageEagerLoadActivity.class)));
+
+        findViewById(R.id.btn5Good).setOnClickListener(v ->
+                startActivity(new Intent(this, ImageLazyLoadActivity.class)));
     }
 
     private void showCanvas2DRendering() {

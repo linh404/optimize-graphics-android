@@ -201,9 +201,7 @@ class _SearchScreenState extends State<SearchScreen> {
     String originalPrice,
     double rating,
     int reviews,
-    String imageUrl, {
-    bool hasBlenderLogo = false,
-  }) {
+    String imageUrl) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
       decoration: BoxDecoration(

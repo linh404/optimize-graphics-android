@@ -8,7 +8,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   flutter_secure_storage_windows
   media_kit_libs_windows_video
   media_kit_video
-  rive_common
+  rive_native
   url_launcher_windows
   volume_controller
 )

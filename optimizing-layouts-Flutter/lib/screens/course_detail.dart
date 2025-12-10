@@ -76,7 +76,7 @@ class _CourseDetailPageState extends State<CourseDetailPage>
 
     String? videoUrl = widget.course.previewVideoUrl;
 
-    if (videoUrl != null && videoUrl.isNotEmpty) {
+    if (videoUrl.isNotEmpty) {
       _initializeVideo(videoUrl);
     }
     _loadSections();
@@ -145,7 +145,7 @@ class _CourseDetailPageState extends State<CourseDetailPage>
   Future<void> _initializeVideo(String videoUrl) async {
     print('Video URL from database: $videoUrl');
 
-    if (videoUrl != null && videoUrl.isNotEmpty) {
+    if (videoUrl.isNotEmpty) {
       print('Initializing media_kit player...');
 
       try {

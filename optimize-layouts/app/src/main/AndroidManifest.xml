@@ -32,5 +32,15 @@
         <activity android:name=".NotViewStub" android:label="3. Bad: Visibility Gone" />
         <activity android:name=".ViewStub" android:label="3. Good: ViewStub" />
 
+        <!-- CẶP 5: IMAGE LAZY LOADING -->
+        <activity 
+            android:name=".ImageEagerLoadActivity" 
+            android:label="5. IMAGE EAGER LOAD (BAD)"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity 
+            android:name=".ImageLazyLoadActivity" 
+            android:label="5. IMAGE LAZY LOAD (GOOD)"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
     </application>
 </manifest>

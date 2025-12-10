@@ -6,19 +6,20 @@ import '../helpers/auth_helper.dart';
 import 'package:android_basic/api/courses_api.dart';
 import 'package:android_basic/screens/search_screen.dart';
 import 'package:android_basic/widgets/cusutom_bottom_navbar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreenCached extends StatefulWidget {
   final String? category;
   final String? searchQuery;
 
-  const HomeScreen({Key? key, this.category, this.searchQuery})
+  const HomeScreenCached({Key? key, this.category, this.searchQuery})
       : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreenCached> createState() => _HomeScreenCachedState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenCachedState extends State<HomeScreenCached> {
   int _selectedIndex = 0;
   String username = "Username";
   int? userID;
@@ -54,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
       debugPrint('API returned ${data.length} courses');
 
       setState(() {
-        coursesData = data; // dùng đúng data, không nhân bản
+        coursesData = data;
         _isLoading = false;
       });
     } catch (e) {
@@ -66,13 +67,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onItemTapped(int index) {
-    // luôn setState, gây rebuild toàn màn hình
     setState(() {
       _selectedIndex = index;
     });
 
     if (index == 0) {
-      // Tab "Nổi bật" – luôn gọi lại API (để sau này tối ưu)
       getCoursesList();
       return;
     }
@@ -104,9 +103,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Trước
   @override
-    Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       bottomNavigationBar: CustomBottomNavBar(
@@ -217,9 +215,26 @@ class _HomeScreenState extends State<HomeScreen> {
                       Positioned.fill(
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            'https://jrmaxpvxillhwsuvmagp.supabase.co/storage/v1/object/public/images/home_main_img/main_home.jpg',
+                          child: CachedNetworkImage(
+                            imageUrl:
+                                'https://jrmaxpvxillhwsuvmagp.supabase.co/storage/v1/object/public/images/home_main_img/main_home.jpg',
                             fit: BoxFit.cover,
+                            placeholder: (context, url) => Container(
+                              color: Colors.grey[800],
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              color: Colors.grey[800],
+                              child: const Icon(
+                                Icons.error,
+                                color: Colors.white,
+                                size: 40,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -312,7 +327,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Container(
               padding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: const Text(
                 'Khoá học nổi bật',
                 style: TextStyle(
@@ -379,20 +394,20 @@ class _HomeScreenState extends State<HomeScreen> {
         final course = coursesData[index];
 
         final discountPrice =
-        course.discountPrice != null ? course.discountPrice as num : 0;
+            course.discountPrice != null ? course.discountPrice as num : 0;
         final originalPrice =
-        course.price != null ? course.price as num : 0;
+            course.price != null ? course.price as num : 0;
         final rating = (course.rating as num?)?.toDouble() ?? 0.0;
         final students = course.studentCount ?? 0;
         final thumb = course.thumbnailUrl ?? '';
 
         final formattedDiscount = _formatCurrency(discountPrice);
         final formattedOriginal =
-        originalPrice > 0 ? _formatCurrency(originalPrice) : '';
+            originalPrice > 0 ? _formatCurrency(originalPrice) : '';
 
         final displayTitle = (course.title ?? '').toString();
         final displayAuthor =
-        (course.userName ?? 'Giảng viên chưa rõ').toString();
+            (course.userName ?? 'Giảng viên chưa rõ').toString();
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -405,7 +420,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               );
             },
-            // card lồng nhiều Container/Column/SizedBox
             child: Container(
               width: 220,
               child: Column(
@@ -425,9 +439,26 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Stack(
                               children: [
                                 Positioned.fill(
-                                  child: Image.network(
-                                    thumb,
+                                  child: CachedNetworkImage(
+                                    imageUrl: thumb,
                                     fit: BoxFit.cover,
+                                    placeholder: (context, url) => Container(
+                                      color: Colors.grey[300],
+                                      child: const Center(
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                      color: Colors.grey[300],
+                                      child: const Icon(
+                                        Icons.broken_image,
+                                        color: Colors.grey,
+                                        size: 40,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -526,7 +557,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final s = value.toStringAsFixed(0);
     final formatted = s.replaceAllMapped(
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (m) => '${m[1]}.',
+      (m) => '${m[1]}.',
     );
     return '$formatted đ';
   }
@@ -572,3 +603,5 @@ class CustomClipPath extends CustomClipper<Path> {
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
+
+
