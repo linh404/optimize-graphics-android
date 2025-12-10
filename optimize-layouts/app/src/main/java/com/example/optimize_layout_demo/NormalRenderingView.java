@@ -21,14 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Vẽ 20.000 hình chữ nhật (40px x 40px), mỗi rect có màu khác nhau, vị trí ngẫu nhiên.
- * Đo thời gian render 1 frame (CPU draw) và hiển thị ổn định (không đổi số giữa alert và overlay).
- * Có hàm đo end-to-end bằng PixelCopy (request -> frame presented).
- */
 public class NormalRenderingView extends View {
 
-    private static final int RECT_COUNT = 20_000;
+    private static final int RECT_COUNT = 50_000;
     private static final float RECT_PX = 40f;
     private static final int RECT_ALPHA = 204;
 
@@ -36,15 +31,14 @@ public class NormalRenderingView extends View {
     private final List<Rect> rects;
     private final Random random;
 
-    // Thời gian vẽ frame đầu tiên (CPU draw), cố định sau lần đo đầu
     private boolean firstDrawMeasured = false;
     private double firstDrawMs = -1.0;
 
+    // Text overlay cache
+    private Bitmap textBitmap;
+    private boolean textOverlayInitialized = false;
+
     public interface OnMeasureDone {
-        /**
-         * @param ms thời gian milli giây từ trigger tới khi frame được composited/presented
-         * @param pixelCopyResult PixelCopy result (PixelCopy.SUCCESS = 0); âm nếu lỗi logic
-         */
         void onDone(double ms, int pixelCopyResult);
     }
 
@@ -56,17 +50,13 @@ public class NormalRenderingView extends View {
         }
     }
 
-    public NormalRenderingView(Context context) {
-        this(context, null);
-    }
+    public NormalRenderingView(Context context) { this(context, null); }
 
     public NormalRenderingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         rects = new ArrayList<>(RECT_COUNT);
         random = new Random(42L);
-        // Nếu muốn đo CPU raster thuần: bật software layer
-        // setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override
@@ -79,8 +69,10 @@ public class NormalRenderingView extends View {
     private void buildRects(int w, int h) {
         rects.clear();
         if (w <= 0 || h <= 0) return;
+
         float maxX = Math.max(0f, w - RECT_PX);
         float maxY = Math.max(0f, h - RECT_PX);
+
         for (int i = 0; i < RECT_COUNT; i++) {
             float x = random.nextFloat() * maxX;
             float y = random.nextFloat() * maxY;
@@ -92,6 +84,26 @@ public class NormalRenderingView extends View {
 
             rects.add(new Rect(x, y, x + RECT_PX, y + RECT_PX, color));
         }
+
+        Log.d("CanvasTest", "Built " + RECT_COUNT + " rectangles");
+    }
+
+    private void initTextOverlay(String text) {
+        if (textOverlayInitialized) return;
+
+        // nhỏ hơn, đặt ở góc trái trên
+        textBitmap = Bitmap.createBitmap(600, 160, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(textBitmap);
+        Paint tp = new Paint(Paint.ANTI_ALIAS_FLAG);
+        tp.setColor(Color.WHITE);
+        tp.setTextSize(42f);
+        tp.setTypeface(android.graphics.Typeface.DEFAULT);
+
+        c.drawColor(Color.TRANSPARENT);
+        c.drawText("Canvas (50k rect)", 16f, 60f, tp);
+        c.drawText(text, 16f, 120f, tp);
+
+        textOverlayInitialized = true;
     }
 
     @Override
@@ -99,20 +111,19 @@ public class NormalRenderingView extends View {
         super.onDraw(canvas);
 
         if (rects.isEmpty()) {
-            // Chưa có kích thước hoặc chưa build xong -> request vẽ lại
             invalidate();
             return;
         }
 
-        Trace.beginSection("Canvas_Render_20000_Shapes");
+        Trace.beginSection("Canvas_Render_50000_Shapes");
         long start = System.nanoTime();
 
-        // Nền đen
+        // Clear background
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(0f, 0f, getWidth(), getHeight(), paint);
 
-        // Vẽ 20.000 rect với màu riêng từng rect
+        // Draw all rectangles
         paint.setStyle(Paint.Style.FILL);
         for (Rect r : rects) {
             paint.setColor(r.color);
@@ -122,41 +133,37 @@ public class NormalRenderingView extends View {
         long end = System.nanoTime();
         double drawMs = (end - start) / 1_000_000.0;
 
-        // Chốt giá trị lần đầu, dùng chung cho overlay + toast/log để không lệch số
         if (!firstDrawMeasured) {
             firstDrawMeasured = true;
             firstDrawMs = drawMs;
 
             getContext().getSharedPreferences("results", Context.MODE_PRIVATE)
                     .edit().putFloat("canvas_render_time", (float) firstDrawMs).apply();
-            Log.d("CanvasTest", "Canvas first-frame render: " + firstDrawMs + " ms");
+            Log.d("CanvasTest", "Canvas first-frame render (50k): " + firstDrawMs + " ms");
             Toast.makeText(getContext(),
-                    "Canvas first frame: " + String.format("%.2f ms", firstDrawMs),
+                    "Canvas (50k): " + String.format("%.2f ms", firstDrawMs),
                     Toast.LENGTH_LONG).show();
+
+            // Init text overlay ONCE
+            initTextOverlay(String.format("First frame: %.2f ms", firstDrawMs));
         }
 
         Trace.endSection();
 
-        // Overlay hiển thị giá trị đã chốt (không đổi nữa)
-        double displayMs = (firstDrawMs >= 0) ? firstDrawMs : drawMs;
-        paint.setColor(Color.WHITE);
-        paint.setTextSize(56f);
-        canvas.drawText("Canvas (20k rect)", 40f, 100f, paint);
-        canvas.drawText(String.format("First frame: %.2f ms", displayMs), 40f, 170f, paint);
+        // Draw text overlay (from cached bitmap), top-left
+        if (textOverlayInitialized && textBitmap != null) {
+            canvas.drawBitmap(textBitmap, 16f, 16f, null);
+        }
     }
 
-    /**
-     * Đo end-to-end (request -> frame presented) bằng PixelCopy (API 26+).
-     * Gọi khi view đã có kích thước hợp lệ.
-     */
     public void measurePresented(Activity activity, OnMeasureDone cb) {
         if (activity == null || cb == null) return;
         if (getWidth() <= 0 || getHeight() <= 0) {
-            cb.onDone(-1, -999); // view chưa layout
+            cb.onDone(-1, -999);
             return;
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            cb.onDone(-2, -998); // PixelCopy yêu cầu API 26+
+            cb.onDone(-2, -998);
             return;
         }
 
@@ -165,7 +172,7 @@ public class NormalRenderingView extends View {
         final Handler handler = new Handler(Looper.getMainLooper());
         final long startNanos = System.nanoTime();
 
-        invalidate(); // trigger render
+        invalidate();
 
         PixelCopy.request(window, bmp, copyResult -> {
             long endNanos = System.nanoTime();
@@ -173,5 +180,14 @@ public class NormalRenderingView extends View {
             Log.d("PixelCopyMeasure", "Canvas presented in " + ms + " ms, result=" + copyResult);
             cb.onDone(ms, copyResult);
         }, handler);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (textBitmap != null && !textBitmap.isRecycled()) {
+            textBitmap.recycle();
+            textBitmap = null;
+        }
     }
 }
