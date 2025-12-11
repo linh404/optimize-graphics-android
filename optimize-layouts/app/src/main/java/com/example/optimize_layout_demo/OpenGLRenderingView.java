@@ -1,7 +1,7 @@
 package com.example.optimize_layout_demo;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,20 +9,18 @@ import android.graphics.Paint;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Trace;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.PixelCopy;
-import android.view.Window;
-import android.widget.Toast;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.Locale;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -41,44 +39,22 @@ public class OpenGLRenderingView extends GLSurfaceView {
         setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
-    public RectanglesRenderer getRendererInstance() { return renderer; }
-
-    public interface OnMeasureDone { void onDone(double ms, int pixelCopyResult); }
-
-    public void measurePresented(Activity activity, OnMeasureDone cb) {
-        if (activity == null || cb == null) return;
-        if (getWidth() <= 0 || getHeight() <= 0) { cb.onDone(-1, -999); return; }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) { cb.onDone(-2, -998); return; }
-
-        final Bitmap bmp = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        final Window window = activity.getWindow();
-        final Handler handler = new Handler(Looper.getMainLooper());
-        final long startNanos = System.nanoTime();
-
-        requestRender();
-
-        PixelCopy.request(window, bmp, copyResult -> {
-            long endNanos = System.nanoTime();
-            double ms = (endNanos - startNanos) / 1_000_000.0;
-            Log.d("PixelCopyMeasure", "OpenGL presented in " + ms + " ms, result=" + copyResult);
-            cb.onDone(ms, copyResult);
-        }, handler);
+    public void startBenchmark(NormalRenderingView.OnBenchmarkComplete callback) {
+        // Wait briefly to ensure surface has been created
+        postDelayed(() -> {
+            queueEvent(() -> renderer.startBenchmark(callback));
+        }, 200);
     }
 
     public static class RectanglesRenderer implements GLSurfaceView.Renderer {
 
+        private static final String TAG = "OpenGLBenchmark";
         private static final int RECT_COUNT = 50_000;
         private static final float RECT_PX = 40f;
         private static final int RECT_ALPHA = 255;
 
-        private static final boolean MEASURE_GPU_FINISH = false;
-        private static final int WARMUP_FRAMES = 2;
-
-        // Overlay constants (giống Canvas)
-        private static final float OVERLAY_LEFT = 16f;
-        private static final float OVERLAY_TOP = 16f;
-        private static final float OVERLAY_WIDTH = 600f;
-        private static final float OVERLAY_HEIGHT = 160f;
+        private static final int WARMUP_FRAMES = 5;
+        private static final int MEASURE_FRAMES = 20;
 
         private final Context context;
         private final Handler mainHandler;
@@ -87,35 +63,44 @@ public class OpenGLRenderingView extends GLSurfaceView {
 
         private int program = 0;
         private int vboId = 0;
-        private int aPosLoc;
-        private int aColorLoc;
+        private int aPosLoc, aColorLoc;
         private int surfaceW = 0, surfaceH = 0;
 
         private boolean vboReady = false;
         private int frameCount = 0;
-        private boolean firstMeasured = false;
-        private double firstDrawMs = -1.0;
+        private boolean measuring = false;
+        private final List<Double> frameTimes = new ArrayList<>();
+        private long lastFrameTimeNanos = 0;
 
-        // Overlay
-        private int texProgram = 0;
-        private int texId = 0;
-        private int texPosLoc;
-        private int texCoordLoc;
-        private int texSamplerLoc;
-        private FloatBuffer texVertexBuf;
-        private FloatBuffer texCoordBuf;
-        private boolean overlayReady = false;
+        private NormalRenderingView.OnBenchmarkComplete callback;
 
+        // We will NOT draw overlay on the GL surface; results will be shown on a separate screen.
         public RectanglesRenderer(Context context, GLSurfaceView glView) {
             this.context = context;
             this.glView = glView;
             this.mainHandler = new Handler(Looper.getMainLooper());
         }
 
+        public void startBenchmark(NormalRenderingView.OnBenchmarkComplete callback) {
+            if (!vboReady || vboId == 0) {
+                Log.e(TAG, "VBO not ready! Cannot start benchmark.");
+                return;
+            }
+
+            this.callback = callback;
+            this.frameCount = 0;
+            this.frameTimes.clear();
+            this.lastFrameTimeNanos = 0;
+            this.measuring = true;
+
+            Log.d(TAG, "OpenGL Benchmark Started");
+        }
+
         @Override
         public void onSurfaceCreated(GL10 gl, EGLConfig config) {
             GLES20.glClearColor(0f, 0f, 0f, 1f);
-            GLES20.glDisable(GLES20.GL_BLEND);
+            GLES20.glEnable(GLES20.GL_BLEND);
+            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
             int vShader = loadShader(GLES20.GL_VERTEX_SHADER, VS);
             int fShader = loadShader(GLES20.GL_FRAGMENT_SHADER, FS);
@@ -126,29 +111,6 @@ public class OpenGLRenderingView extends GLSurfaceView {
 
             aPosLoc = GLES20.glGetAttribLocation(program, "vPosition");
             aColorLoc = GLES20.glGetAttribLocation(program, "aColor");
-
-            // Overlay shader
-            int tv = loadShader(GLES20.GL_VERTEX_SHADER, TEX_VS);
-            int tf = loadShader(GLES20.GL_FRAGMENT_SHADER, TEX_FS);
-            texProgram = GLES20.glCreateProgram();
-            GLES20.glAttachShader(texProgram, tv);
-            GLES20.glAttachShader(texProgram, tf);
-            GLES20.glLinkProgram(texProgram);
-
-            texPosLoc = GLES20.glGetAttribLocation(texProgram, "aPosition");
-            texCoordLoc = GLES20.glGetAttribLocation(texProgram, "aTexCoord");
-            texSamplerLoc = GLES20.glGetUniformLocation(texProgram, "uTexture");
-
-            // Texture coordinates
-            float[] uvs = {
-                    0f, 0f,
-                    1f, 0f,
-                    0f, 1f,
-                    1f, 1f
-            };
-            texCoordBuf = ByteBuffer.allocateDirect(uvs.length * 4)
-                    .order(ByteOrder.nativeOrder()).asFloatBuffer();
-            texCoordBuf.put(uvs).position(0);
         }
 
         @Override
@@ -157,33 +119,9 @@ public class OpenGLRenderingView extends GLSurfaceView {
             surfaceW = width;
             surfaceH = height;
             buildVbo();
-            updateOverlayQuad();
             vboReady = true;
-            frameCount = 0;
-            firstMeasured = false;
-            overlayReady = false;
-            glView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-        }
 
-        private void updateOverlayQuad() {
-            if (surfaceW <= 0 || surfaceH <= 0) return;
-
-            // Convert pixel coordinates to NDC
-            float x1 = (OVERLAY_LEFT / surfaceW) * 2f - 1f;
-            float y1 = 1f - (OVERLAY_TOP / surfaceH) * 2f;
-            float x2 = ((OVERLAY_LEFT + OVERLAY_WIDTH) / surfaceW) * 2f - 1f;
-            float y2 = 1f - ((OVERLAY_TOP + OVERLAY_HEIGHT) / surfaceH) * 2f;
-
-            float[] verts = {
-                    x1, y1, 0f,  // top-left
-                    x2, y1, 0f,  // top-right
-                    x1, y2, 0f,  // bottom-left
-                    x2, y2, 0f   // bottom-right
-            };
-
-            texVertexBuf = ByteBuffer.allocateDirect(verts.length * 4)
-                    .order(ByteOrder.nativeOrder()).asFloatBuffer();
-            texVertexBuf.put(verts).position(0);
+            Log.d(TAG, "Surface ready: " + width + "x" + height);
         }
 
         private void buildVbo() {
@@ -206,7 +144,7 @@ public class OpenGLRenderingView extends GLSurfaceView {
                 float hue = random.nextFloat() * 360f;
                 float sat = 0.6f + random.nextFloat() * 0.4f;
                 float val = 0.6f + random.nextFloat() * 0.4f;
-                int colInt = android.graphics.Color.HSVToColor(RECT_ALPHA, new float[]{hue, sat, val});
+                int colInt = Color.HSVToColor(RECT_ALPHA, new float[]{hue, sat, val});
 
                 float a = ((colInt >> 24) & 0xFF) / 255f;
                 float r = ((colInt >> 16) & 0xFF) / 255f;
@@ -216,31 +154,28 @@ public class OpenGLRenderingView extends GLSurfaceView {
                 float x2 = x + sizeNdcX;
                 float y2 = y + sizeNdcY;
 
-                // Triangle 1
-                interleaved[idx++] = x;    interleaved[idx++] = y;    interleaved[idx++] = 0f;
-                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
+                interleaved[idx++] = x; interleaved[idx++] = y; interleaved[idx++] = 0f;
+                interleaved[idx++] = r; interleaved[idx++] = g; interleaved[idx++] = b; interleaved[idx++] = a;
 
-                interleaved[idx++] = x2;   interleaved[idx++] = y;    interleaved[idx++] = 0f;
-                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
+                interleaved[idx++] = x2; interleaved[idx++] = y; interleaved[idx++] = 0f;
+                interleaved[idx++] = r; interleaved[idx++] = g; interleaved[idx++] = b; interleaved[idx++] = a;
 
-                interleaved[idx++] = x;    interleaved[idx++] = y2;   interleaved[idx++] = 0f;
-                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
+                interleaved[idx++] = x; interleaved[idx++] = y2; interleaved[idx++] = 0f;
+                interleaved[idx++] = r; interleaved[idx++] = g; interleaved[idx++] = b; interleaved[idx++] = a;
 
-                // Triangle 2
-                interleaved[idx++] = x2;   interleaved[idx++] = y;    interleaved[idx++] = 0f;
-                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
+                interleaved[idx++] = x2; interleaved[idx++] = y; interleaved[idx++] = 0f;
+                interleaved[idx++] = r; interleaved[idx++] = g; interleaved[idx++] = b; interleaved[idx++] = a;
 
-                interleaved[idx++] = x2;   interleaved[idx++] = y2;   interleaved[idx++] = 0f;
-                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
+                interleaved[idx++] = x2; interleaved[idx++] = y2; interleaved[idx++] = 0f;
+                interleaved[idx++] = r; interleaved[idx++] = g; interleaved[idx++] = b; interleaved[idx++] = a;
 
-                interleaved[idx++] = x;    interleaved[idx++] = y2;   interleaved[idx++] = 0f;
-                interleaved[idx++] = r;    interleaved[idx++] = g;    interleaved[idx++] = b; interleaved[idx++] = a;
+                interleaved[idx++] = x; interleaved[idx++] = y2; interleaved[idx++] = 0f;
+                interleaved[idx++] = r; interleaved[idx++] = g; interleaved[idx++] = b; interleaved[idx++] = a;
             }
 
             if (vboId != 0) {
                 int[] old = {vboId};
                 GLES20.glDeleteBuffers(1, old, 0);
-                vboId = 0;
             }
 
             int[] buffers = new int[1];
@@ -254,128 +189,87 @@ public class OpenGLRenderingView extends GLSurfaceView {
 
             GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, interleaved.length * 4, vb, GLES20.GL_STATIC_DRAW);
             GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+
+            Log.d(TAG, "VBO built with " + RECT_COUNT + " rectangles");
         }
 
         @Override
         public void onDrawFrame(GL10 gl) {
-            if (!vboReady || vboId == 0) return;
-
-            Trace.beginSection("OpenGL_Render_50000_Shapes");
-            long startCpu = System.nanoTime();
-
-            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-
-            GLES20.glUseProgram(program);
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId);
-
-            final int floatsPerVertex = 7;
-            final int stride = floatsPerVertex * 4;
-
-            GLES20.glEnableVertexAttribArray(aPosLoc);
-            GLES20.glVertexAttribPointer(aPosLoc, 3, GLES20.GL_FLOAT, false, stride, 0);
-
-            GLES20.glEnableVertexAttribArray(aColorLoc);
-            GLES20.glVertexAttribPointer(aColorLoc, 4, GLES20.GL_FLOAT, false, stride, 3 * 4);
-
-            int vertexCount = RECT_COUNT * 6;
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexCount);
-
-            long afterSubmit = System.nanoTime();
-
-            double gpuFinishMs = -1;
-            if (MEASURE_GPU_FINISH) {
-                GLES20.glFinish();
-                gpuFinishMs = (System.nanoTime() - startCpu) / 1_000_000.0;
-            }
-
-            GLES20.glDisableVertexAttribArray(aPosLoc);
-            GLES20.glDisableVertexAttribArray(aColorLoc);
-            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
-
-            double cpuSubmitMs = (afterSubmit - startCpu) / 1_000_000.0;
-
-            frameCount++;
-            if (frameCount <= WARMUP_FRAMES) {
-                Trace.endSection();
-                return;
-            }
-
-            if (!firstMeasured) {
-                firstMeasured = true;
-                firstDrawMs = MEASURE_GPU_FINISH ? gpuFinishMs : cpuSubmitMs;
-
-                mainHandler.post(() -> {
-                    context.getSharedPreferences("results", Context.MODE_PRIVATE)
-                            .edit().putFloat("opengl_render_time", (float) firstDrawMs).apply();
-                    Log.d("OpenGLTest", "OpenGL ES first-frame (50k), " +
-                            (MEASURE_GPU_FINISH ? "CPU+GPU finish" : "CPU submit") +
-                            ": " + firstDrawMs + " ms");
-                    Toast.makeText(context,
-                            "OpenGL ES (50k): " + String.format("%.2f ms", firstDrawMs),
-                            Toast.LENGTH_LONG).show();
-
-                    glView.queueEvent(() -> {
-                        initOverlayTexture(String.format("First frame: %.2f ms", firstDrawMs));
-                        glView.requestRender();
-                        glView.post(() -> glView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY));
-                    });
-                });
-            }
-
-            // Draw overlay
-            if (overlayReady) {
-                GLES20.glEnable(GLES20.GL_BLEND);
-                GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-
-                GLES20.glUseProgram(texProgram);
-                GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texId);
-                GLES20.glUniform1i(texSamplerLoc, 0);
-
-                GLES20.glEnableVertexAttribArray(texPosLoc);
-                GLES20.glVertexAttribPointer(texPosLoc, 3, GLES20.GL_FLOAT, false, 0, texVertexBuf);
-
-                GLES20.glEnableVertexAttribArray(texCoordLoc);
-                GLES20.glVertexAttribPointer(texCoordLoc, 2, GLES20.GL_FLOAT, false, 0, texCoordBuf);
-
-                GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-
-                GLES20.glDisableVertexAttribArray(texPosLoc);
-                GLES20.glDisableVertexAttribArray(texCoordLoc);
-                GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+            if (vboReady && vboId != 0) {
+                GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
                 GLES20.glDisable(GLES20.GL_BLEND);
+                GLES20.glUseProgram(program);
+                GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId);
+
+                final int stride = 7 * 4;
+                GLES20.glEnableVertexAttribArray(aPosLoc);
+                GLES20.glVertexAttribPointer(aPosLoc, 3, GLES20.GL_FLOAT, false, stride, 0);
+
+                GLES20.glEnableVertexAttribArray(aColorLoc);
+                GLES20.glVertexAttribPointer(aColorLoc, 4, GLES20.GL_FLOAT, false, stride, 3 * 4);
+
+                GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, RECT_COUNT * 6);
+
+                GLES20.glDisableVertexAttribArray(aPosLoc);
+                GLES20.glDisableVertexAttribArray(aColorLoc);
+                GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0);
+
+                if (measuring) {
+                    frameCount++;
+                    long now = System.nanoTime();
+                    if (lastFrameTimeNanos != 0 && frameCount > WARMUP_FRAMES) {
+                        long delta = now - lastFrameTimeNanos;
+                        double frameTimeMs = delta / 1_000_000.0;
+                        frameTimes.add(frameTimeMs);
+                    }
+                    lastFrameTimeNanos = now;
+
+                    Log.d(TAG, "Frame " + frameCount + "/" + (WARMUP_FRAMES + MEASURE_FRAMES));
+
+                    if (frameCount >= WARMUP_FRAMES + MEASURE_FRAMES) {
+                        finalizeBenchmark();
+                    }
+                }
             }
 
-            Trace.endSection();
+            // We intentionally do NOT draw overlay on the GL surface.
         }
 
-        private void initOverlayTexture(String text) {
-            // Giống Canvas: 600x160, text size 42f, padding 16px
-            Bitmap bmp = Bitmap.createBitmap((int)OVERLAY_WIDTH, (int)OVERLAY_HEIGHT, Bitmap.Config.ARGB_8888);
-            Canvas c = new Canvas(bmp);
-            c.drawColor(Color.TRANSPARENT);
+        private void finalizeBenchmark() {
+            measuring = false;
 
-            Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
-            p.setColor(Color.WHITE);
-            p.setTextSize(42f);
-            p.setTypeface(android.graphics.Typeface.DEFAULT);
+            if (frameTimes.isEmpty()) return;
 
-            c.drawText("OpenGL ES (50k rect)", 16f, 60f, p);
-            c.drawText(text, 16f, 120f, p);
+            double frameSum = 0;
+            for (double t : frameTimes) frameSum += t;
+            double avgFrame = frameSum / frameTimes.size();
 
-            int[] tex = new int[1];
-            GLES20.glGenTextures(1, tex, 0);
-            texId = tex[0];
+            Log.d(TAG, "OpenGL Result: " + String.format(Locale.US, "%.2fms", avgFrame));
 
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texId);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bmp, 0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, 0);
+            // Notify callback on main thread (if provided)
+            if (callback != null) {
+                mainHandler.post(() -> callback.onComplete(avgFrame));
+            }
 
-            bmp.recycle();
-            overlayReady = true;
+            // Launch StatsActivity on main thread with the full list
+            double[] arr = new double[frameTimes.size()];
+            for (int i = 0; i < frameTimes.size(); i++) arr[i] = frameTimes.get(i);
+
+            mainHandler.post(() -> {
+                try {
+                    Intent it = new Intent(context, StatsActivity.class);
+                    it.putExtra(StatsActivity.EXTRA_MODE, "OpenGL");
+                    it.putExtra(StatsActivity.EXTRA_AVG, avgFrame);
+                    it.putExtra(StatsActivity.EXTRA_FRAME_TIMES, arr);
+                    if (!(context instanceof android.app.Activity)) {
+                        it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    }
+                    context.startActivity(it);
+                } catch (Exception ex) {
+                    Log.e(TAG, "Failed to launch StatsActivity", ex);
+                }
+            });
         }
 
         private int loadShader(int type, String code) {
@@ -389,26 +283,11 @@ public class OpenGLRenderingView extends GLSurfaceView {
                 "attribute vec4 vPosition;\n" +
                         "attribute vec4 aColor;\n" +
                         "varying vec4 vColor;\n" +
-                        "void main(){\n" +
-                        "  gl_Position = vPosition;\n" +
-                        "  vColor = aColor;\n" +
-                        "}\n";
+                        "void main(){ gl_Position = vPosition; vColor = aColor; }\n";
 
         private static final String FS =
                 "precision mediump float;\n" +
                         "varying vec4 vColor;\n" +
                         "void main(){ gl_FragColor = vColor; }\n";
-
-        private static final String TEX_VS =
-                "attribute vec4 aPosition;\n" +
-                        "attribute vec2 aTexCoord;\n" +
-                        "varying vec2 vTexCoord;\n" +
-                        "void main(){ gl_Position = aPosition; vTexCoord = aTexCoord; }\n";
-
-        private static final String TEX_FS =
-                "precision mediump float;\n" +
-                        "varying vec2 vTexCoord;\n" +
-                        "uniform sampler2D uTexture;\n" +
-                        "void main(){ gl_FragColor = texture2D(uTexture, vTexCoord); }\n";
     }
 }

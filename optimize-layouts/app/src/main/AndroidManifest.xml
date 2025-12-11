@@ -8,39 +8,71 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
 
-        <!-- MENU CHÍNH -->
-        <activity android:name=".MainActivity" android:exported="true">
+        <!-- MAIN -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- STATS / RESULTS SCREEN (added) -->
+        <activity
+            android:name=".StatsActivity"
+            android:label="Benchmark Results"
+            android:exported="false" />
+
         <!-- CẶP 1: HIERARCHY -->
         <!-- Sửa .LinearLayout thành .Linear (theo tên file của bạn) -->
         <!-- LƯU Ý: Không nên đặt tên class là LinearLayout vì trùng với thư viện Android -->
-        <activity android:name=".Linear" android:label="1. Bad: Nested Linear" />
-        <activity android:name=".Constraint" android:label="1. Good: Constraint" />
+        <activity
+            android:name=".Linear"
+            android:label="1. Bad: Nested Linear"
+            android:exported="false" />
+        <activity
+            android:name=".Constraint"
+            android:label="1. Good: Constraint"
+            android:exported="false" />
 
-        <activity android:name=".re_li_benchmark_activity" android:label="4. Benchmark Tool" />
+        <!-- BENCHMARK TOOL -->
+        <activity
+            android:name=".re_li_benchmark_activity"
+            android:label="4. Benchmark Tool"
+            android:exported="false" />
 
         <!-- CẶP 2: REUSE -->
-        <activity android:name=".NotMerge" android:label="2. Bad: Include Normal" />
-        <activity android:name=".Merge" android:label="2. Good: Merge Tag" />
+        <activity
+            android:name=".NotMerge"
+            android:label="2. Bad: Include Normal"
+            android:exported="false" />
+        <activity
+            android:name=".Merge"
+            android:label="2. Good: Merge Tag"
+            android:exported="false" />
 
         <!-- CẶP 3: LOADING -->
-        <activity android:name=".NotViewStub" android:label="3. Bad: Visibility Gone" />
-        <activity android:name=".ViewStub" android:label="3. Good: ViewStub" />
+        <activity
+            android:name=".NotViewStub"
+            android:label="3. Bad: Visibility Gone"
+            android:exported="false" />
+        <activity
+            android:name=".ViewStub"
+            android:label="3. Good: ViewStub"
+            android:exported="false" />
 
         <!-- CẶP 5: IMAGE LAZY LOADING -->
-        <activity 
-            android:name=".ImageEagerLoadActivity" 
+        <activity
+            android:name=".ImageEagerLoadActivity"
             android:label="5. IMAGE EAGER LOAD (BAD)"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity 
-            android:name=".ImageLazyLoadActivity" 
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="false" />
+        <activity
+            android:name=".ImageLazyLoadActivity"
             android:label="5. IMAGE LAZY LOAD (GOOD)"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="false" />
 
     </application>
 </manifest>

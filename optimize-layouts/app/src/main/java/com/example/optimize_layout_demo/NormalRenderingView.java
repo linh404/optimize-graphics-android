@@ -1,45 +1,45 @@
 package com.example.optimize_layout_demo;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Trace;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.PixelCopy;
+import android.view.Choreographer;
 import android.view.View;
-import android.view.Window;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Locale;
 
 public class NormalRenderingView extends View {
 
+    private static final String TAG = "CanvasBenchmark";
     private static final int RECT_COUNT = 50_000;
     private static final float RECT_PX = 40f;
     private static final int RECT_ALPHA = 204;
+
+    private static final int WARMUP_FRAMES = 5;
+    private static final int MEASURE_FRAMES = 20;
 
     private final Paint paint;
     private final List<Rect> rects;
     private final Random random;
 
-    private boolean firstDrawMeasured = false;
-    private double firstDrawMs = -1.0;
+    private int frameCount = 0;
+    private boolean measuring = false;
+    private final List<Double> frameTimes = new ArrayList<>();
+    private long lastFrameTimeNanos = 0;
 
-    // Text overlay cache
-    private Bitmap textBitmap;
-    private boolean textOverlayInitialized = false;
+    private OnBenchmarkComplete callback;
 
-    public interface OnMeasureDone {
-        void onDone(double ms, int pixelCopyResult);
+    public interface OnBenchmarkComplete {
+        void onComplete(double avgFrameMs);
     }
 
     public static class Rect {
@@ -58,6 +58,42 @@ public class NormalRenderingView extends View {
         rects = new ArrayList<>(RECT_COUNT);
         random = new Random(42L);
     }
+
+    public void startBenchmark(OnBenchmarkComplete callback) {
+        this.callback = callback;
+        this.frameCount = 0;
+        this.frameTimes.clear();
+        this.lastFrameTimeNanos = 0;
+        this.measuring = true;
+
+        // Start frame callbacks
+        Choreographer.getInstance().postFrameCallback(frameCallback);
+        invalidate();
+
+        Log.d(TAG, "Canvas Benchmark Started");
+    }
+
+    private final Choreographer.FrameCallback frameCallback = new Choreographer.FrameCallback() {
+        @Override
+        public void doFrame(long frameTimeNanos) {
+            if (!measuring) return;
+
+            if (lastFrameTimeNanos != 0 && frameCount > WARMUP_FRAMES) {
+                long frameDeltaNanos = frameTimeNanos - lastFrameTimeNanos;
+                double frameTimeMs = frameDeltaNanos / 1_000_000.0;
+                frameTimes.add(frameTimeMs);
+            }
+            lastFrameTimeNanos = frameTimeNanos;
+
+            if (frameCount < WARMUP_FRAMES + MEASURE_FRAMES) {
+                frameCount++;
+                postInvalidateOnAnimation();
+                Choreographer.getInstance().postFrameCallback(this);
+            } else {
+                finalizeBenchmark();
+            }
+        }
+    };
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -80,114 +116,80 @@ public class NormalRenderingView extends View {
             float hue = random.nextFloat() * 360f;
             float sat = 0.6f + random.nextFloat() * 0.4f;
             float val = 0.6f + random.nextFloat() * 0.4f;
-            int color = Color.HSVToColor(RECT_ALPHA, new float[]{hue, sat, val});
+            int color = android.graphics.Color.HSVToColor(RECT_ALPHA, new float[]{hue, sat, val});
 
             rects.add(new Rect(x, y, x + RECT_PX, y + RECT_PX, color));
         }
 
-        Log.d("CanvasTest", "Built " + RECT_COUNT + " rectangles");
-    }
-
-    private void initTextOverlay(String text) {
-        if (textOverlayInitialized) return;
-
-        // nhỏ, góc trái trên
-        textBitmap = Bitmap.createBitmap(600, 160, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(textBitmap);
-        Paint tp = new Paint(Paint.ANTI_ALIAS_FLAG);
-        tp.setColor(Color.WHITE);
-        tp.setTextSize(42f);
-        tp.setTypeface(android.graphics.Typeface.DEFAULT);
-
-        c.drawColor(Color.TRANSPARENT);
-        c.drawText("Canvas (50k rect)", 16f, 60f, tp);
-        c.drawText(text, 16f, 120f, tp);
-
-        textOverlayInitialized = true;
+        Log.d(TAG, "Built " + RECT_COUNT + " rectangles");
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (rects.isEmpty()) {
-            invalidate();
-            return;
+        if (!rects.isEmpty()) {
+            // Clear
+            paint.setColor(Color.BLACK);
+            paint.setStyle(Paint.Style.FILL);
+            canvas.drawRect(0f, 0f, getWidth(), getHeight(), paint);
+
+            // Draw 50k shapes
+            paint.setStyle(Paint.Style.FILL);
+            for (Rect r : rects) {
+                paint.setColor(r.color);
+                canvas.drawRect(r.left, r.top, r.right, r.bottom, paint);
+            }
+
+            if (measuring) {
+                // Keep invalidating to continue frames while measuring
+                postInvalidateOnAnimation();
+            }
         }
 
-        Trace.beginSection("Canvas_Render_50000_Shapes");
-        long start = System.nanoTime();
-
-        // Clear background
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(0f, 0f, getWidth(), getHeight(), paint);
-
-        // Draw all rectangles
-        paint.setStyle(Paint.Style.FILL);
-        for (Rect r : rects) {
-            paint.setColor(r.color);
-            canvas.drawRect(r.left, r.top, r.right, r.bottom, paint);
-        }
-
-        long end = System.nanoTime();
-        double drawMs = (end - start) / 1_000_000.0;
-
-        if (!firstDrawMeasured) {
-            firstDrawMeasured = true;
-            firstDrawMs = drawMs;
-
-            getContext().getSharedPreferences("results", Context.MODE_PRIVATE)
-                    .edit().putFloat("canvas_render_time", (float) firstDrawMs).apply();
-            Log.d("CanvasTest", "Canvas first-frame render (50k): " + firstDrawMs + " ms");
-            Toast.makeText(getContext(),
-                    "Canvas (50k): " + String.format("%.2f ms", firstDrawMs),
-                    Toast.LENGTH_LONG).show();
-
-            // Init text overlay ONCE
-            initTextOverlay(String.format("First frame: %.2f ms", firstDrawMs));
-        }
-
-        Trace.endSection();
-
-        // Draw text overlay (from cached bitmap), top-left
-        if (textOverlayInitialized && textBitmap != null) {
-            canvas.drawBitmap(textBitmap, 16f, 16f, null);
-        }
+        // NOTE: We intentionally do NOT draw overlay or result here.
+        // The results will be shown on a separate screen (StatsActivity).
     }
 
-    public void measurePresented(Activity activity, OnMeasureDone cb) {
-        if (activity == null || cb == null) return;
-        if (getWidth() <= 0 || getHeight() <= 0) {
-            cb.onDone(-1, -999);
-            return;
+    private void finalizeBenchmark() {
+        measuring = false;
+
+        if (frameTimes.isEmpty()) return;
+
+        double frameSum = 0;
+        for (double t : frameTimes) frameSum += t;
+        double avgFrame = frameSum / frameTimes.size();
+
+        Log.d(TAG, "Canvas Result: " + String.format(Locale.US, "%.2fms", avgFrame));
+
+        // Notify callback on main thread (if used)
+        if (callback != null) {
+            new Handler(Looper.getMainLooper()).post(() -> callback.onComplete(avgFrame));
         }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            cb.onDone(-2, -998);
-            return;
+
+        // Launch StatsActivity to show full results
+        try {
+            double[] arr = new double[frameTimes.size()];
+            for (int i = 0; i < frameTimes.size(); i++) arr[i] = frameTimes.get(i);
+
+            Context ctx = getContext();
+            Intent it = new Intent(ctx, StatsActivity.class);
+            it.putExtra(StatsActivity.EXTRA_MODE, "Canvas");
+            it.putExtra(StatsActivity.EXTRA_AVG, avgFrame);
+            it.putExtra(StatsActivity.EXTRA_FRAME_TIMES, arr);
+
+            // If context is not an activity, add NEW_TASK
+            if (!(ctx instanceof android.app.Activity)) {
+                it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
+            ctx.startActivity(it);
+        } catch (Exception ex) {
+            Log.e(TAG, "Failed to launch StatsActivity", ex);
         }
-
-        final Bitmap bmp = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        final Window window = activity.getWindow();
-        final Handler handler = new Handler(Looper.getMainLooper());
-        final long startNanos = System.nanoTime();
-
-        invalidate();
-
-        PixelCopy.request(window, bmp, copyResult -> {
-            long endNanos = System.nanoTime();
-            double ms = (endNanos - startNanos) / 1_000_000.0;
-            Log.d("PixelCopyMeasure", "Canvas presented in " + ms + " ms, result=" + copyResult);
-            cb.onDone(ms, copyResult);
-        }, handler);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (textBitmap != null && !textBitmap.isRecycled()) {
-            textBitmap.recycle();
-            textBitmap = null;
-        }
     }
 }
